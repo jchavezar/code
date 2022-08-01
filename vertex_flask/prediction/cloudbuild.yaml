@@ -1,6 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'us-central1-docker.pkg.dev/jchavezar-demo/predictions/prediction:latest', '.' ]
+  args: [ 'build', '-t', 'us-central1-docker.pkg.dev/jchavezar-demo/predictions/prediction:latest', 'vertex_flask/prediction/.' ]
 images:
 - 'us-central1-docker.pkg.dev/jchavezar-demo/predictions/prediction:latest'
 options:
