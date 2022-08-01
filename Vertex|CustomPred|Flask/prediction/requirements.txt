@@ -1,8 +1,0 @@
-google-cloud-storage
-numpy
-pandas
-sklearn
-simplejson
-catboost
-flask
-xgboost
