@@ -43,8 +43,8 @@ def prediction():
     data = request.get_json(silent=True, force=True)
     dmf = xgb.DMatrix(pd.DataFrame(data["instances"], columns=_features))
     response = pd.DataFrame(model.predict(dmf))
-    response = response.idxmax(axis=1)[0]
-    return simplejson.dumps({"Cover Type": str(response)})
+    logging.info(f"Response: {response}")
+    return {"Cover Type": str(response.idxmax(axis=1)[0])}
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8080)
