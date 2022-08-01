@@ -5,4 +5,3 @@ images:
 - 'us-central1-docker.pkg.dev/jchavezar-demo/predictions/prediction:latest'
 options:
   logging: CLOUD_LOGGING_ONLY
-  
