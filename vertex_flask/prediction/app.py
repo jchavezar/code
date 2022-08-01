@@ -1,10 +1,8 @@
-import json
 import os
-import simplejson
 import logging
 import pandas as pd
 import xgboost as xgb
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 from google.cloud import storage
 
 client = storage.Client(project=os.environ['PROJECT_ID'])
@@ -44,7 +42,7 @@ def prediction():
     dmf = xgb.DMatrix(pd.DataFrame(data["instances"], columns=_features))
     response = pd.DataFrame(model.predict(dmf))
     logging.info(f"Response: {response}")
-    return {"Cover Type": str(response.idxmax(axis=1)[0])}
+    return jsonify({"Cover Type": str(response.idxmax(axis=1)[0])})
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=8080)
