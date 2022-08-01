@@ -1,0 +1,1077 @@
+{
+  "pipelineSpec": {
+    "components": {
+      "comp-condition-model-deploy-decision-1": {
+        "dag": {
+          "tasks": {
+            "endpoint-create": {
+              "cachingOptions": {
+                "enableCache": true
+              },
+              "componentRef": {
+                "name": "comp-endpoint-create"
+              },
+              "inputs": {
+                "parameters": {
+                  "description": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "display_name": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "pipelines-created-endpoint"
+                      }
+                    }
+                  },
+                  "encryption_spec_key_name": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "labels": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "location": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "us-central1"
+                      }
+                    }
+                  },
+                  "network": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "project": {
+                    "componentInputParameter": "pipelineparam--project_id"
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "endpoint-create"
+              }
+            },
+            "importer": {
+              "cachingOptions": {
+                "enableCache": true
+              },
+              "componentRef": {
+                "name": "comp-importer"
+              },
+              "inputs": {
+                "parameters": {
+                  "uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "gs://vtx-models/model/xgboost"
+                      }
+                    }
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "importer"
+              }
+            },
+            "model-deploy": {
+              "cachingOptions": {},
+              "componentRef": {
+                "name": "comp-model-deploy"
+              },
+              "dependentTasks": [
+                "endpoint-create",
+                "model-upload"
+              ],
+              "inputs": {
+                "artifacts": {
+                  "endpoint": {
+                    "taskOutputArtifact": {
+                      "outputArtifactKey": "endpoint",
+                      "producerTask": "endpoint-create"
+                    }
+                  },
+                  "model": {
+                    "taskOutputArtifact": {
+                      "outputArtifactKey": "model",
+                      "producerTask": "model-upload"
+                    }
+                  }
+                },
+                "parameters": {
+                  "automatic_resources_max_replica_count": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "0"
+                      }
+                    }
+                  },
+                  "automatic_resources_min_replica_count": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "0"
+                      }
+                    }
+                  },
+                  "dedicated_resources_accelerator_count": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "0"
+                      }
+                    }
+                  },
+                  "dedicated_resources_accelerator_type": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "dedicated_resources_machine_type": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "n1-standard-4"
+                      }
+                    }
+                  },
+                  "dedicated_resources_max_replica_count": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "1"
+                      }
+                    }
+                  },
+                  "dedicated_resources_min_replica_count": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "1"
+                      }
+                    }
+                  },
+                  "deployed_model_display_name": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "xgboost_model_end"
+                      }
+                    }
+                  },
+                  "disable_container_logging": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "0"
+                      }
+                    }
+                  },
+                  "enable_access_logging": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "0"
+                      }
+                    }
+                  },
+                  "explanation_metadata": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "explanation_parameters": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "service_account": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "traffic_split": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{\"0\": \"100\"}"
+                      }
+                    }
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "model-deploy"
+              }
+            },
+            "model-upload": {
+              "cachingOptions": {
+                "enableCache": true
+              },
+              "componentRef": {
+                "name": "comp-model-upload"
+              },
+              "dependentTasks": [
+                "importer"
+              ],
+              "inputs": {
+                "artifacts": {
+                  "unmanaged_container_model": {
+                    "taskOutputArtifact": {
+                      "outputArtifactKey": "artifact",
+                      "producerTask": "importer"
+                    }
+                  }
+                },
+                "parameters": {
+                  "artifact_uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "description": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "display_name": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "xgb-model"
+                      }
+                    }
+                  },
+                  "encryption_spec_key_name": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "explanation_metadata": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "explanation_parameters": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "instance_schema_uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "labels": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "location": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "us-central1"
+                      }
+                    }
+                  },
+                  "parameters_schema_uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "prediction_schema_uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "project": {
+                    "componentInputParameter": "pipelineparam--project_id"
+                  },
+                  "serving_container_args": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "[]"
+                      }
+                    }
+                  },
+                  "serving_container_command": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "[]"
+                      }
+                    }
+                  },
+                  "serving_container_environment_variables": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "[]"
+                      }
+                    }
+                  },
+                  "serving_container_health_route": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "serving_container_image_uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "serving_container_ports": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "[]"
+                      }
+                    }
+                  },
+                  "serving_container_predict_route": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "model-upload"
+              }
+            }
+          }
+        },
+        "inputDefinitions": {
+          "parameters": {
+            "pipelineparam--eval_acc_threshold": {
+              "type": "DOUBLE"
+            },
+            "pipelineparam--get-train-job-details-eval_metric": {
+              "type": "DOUBLE"
+            },
+            "pipelineparam--project_id": {
+              "type": "STRING"
+            }
+          }
+        }
+      },
+      "comp-custom-training-job": {
+        "executorLabel": "exec-custom-training-job",
+        "inputDefinitions": {
+          "parameters": {
+            "base_output_directory": {
+              "type": "STRING"
+            },
+            "display_name": {
+              "type": "STRING"
+            },
+            "enable_web_access": {
+              "type": "STRING"
+            },
+            "encryption_spec_key_name": {
+              "type": "STRING"
+            },
+            "labels": {
+              "type": "STRING"
+            },
+            "location": {
+              "type": "STRING"
+            },
+            "network": {
+              "type": "STRING"
+            },
+            "project": {
+              "type": "STRING"
+            },
+            "reserved_ip_ranges": {
+              "type": "STRING"
+            },
+            "restart_job_on_worker_restart": {
+              "type": "STRING"
+            },
+            "service_account": {
+              "type": "STRING"
+            },
+            "tensorboard": {
+              "type": "STRING"
+            },
+            "timeout": {
+              "type": "STRING"
+            },
+            "worker_pool_specs": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "parameters": {
+            "gcp_resources": {
+              "type": "STRING"
+            }
+          }
+        }
+      },
+      "comp-endpoint-create": {
+        "executorLabel": "exec-endpoint-create",
+        "inputDefinitions": {
+          "parameters": {
+            "description": {
+              "type": "STRING"
+            },
+            "display_name": {
+              "type": "STRING"
+            },
+            "encryption_spec_key_name": {
+              "type": "STRING"
+            },
+            "labels": {
+              "type": "STRING"
+            },
+            "location": {
+              "type": "STRING"
+            },
+            "network": {
+              "type": "STRING"
+            },
+            "project": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "endpoint": {
+              "artifactType": {
+                "schemaTitle": "google.VertexEndpoint",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "gcp_resources": {
+              "type": "STRING"
+            }
+          }
+        }
+      },
+      "comp-get-train-job-details": {
+        "executorLabel": "exec-get-train-job-details",
+        "inputDefinitions": {
+          "parameters": {
+            "eval_metric_key": {
+              "type": "STRING"
+            },
+            "model_dir": {
+              "type": "STRING"
+            },
+            "model_display_name": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "metrics": {
+              "artifactType": {
+                "schemaTitle": "system.Metrics",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "model": {
+              "artifactType": {
+                "schemaTitle": "system.Model",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "eval_metric": {
+              "type": "DOUBLE"
+            }
+          }
+        }
+      },
+      "comp-importer": {
+        "executorLabel": "exec-importer",
+        "inputDefinitions": {
+          "parameters": {
+            "uri": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "artifact": {
+              "artifactType": {
+                "schemaTitle": "google.UnmanagedContainerModel",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          }
+        }
+      },
+      "comp-model-deploy": {
+        "executorLabel": "exec-model-deploy",
+        "inputDefinitions": {
+          "artifacts": {
+            "endpoint": {
+              "artifactType": {
+                "schemaTitle": "google.VertexEndpoint",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "model": {
+              "artifactType": {
+                "schemaTitle": "google.VertexModel",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "automatic_resources_max_replica_count": {
+              "type": "INT"
+            },
+            "automatic_resources_min_replica_count": {
+              "type": "INT"
+            },
+            "dedicated_resources_accelerator_count": {
+              "type": "INT"
+            },
+            "dedicated_resources_accelerator_type": {
+              "type": "STRING"
+            },
+            "dedicated_resources_machine_type": {
+              "type": "STRING"
+            },
+            "dedicated_resources_max_replica_count": {
+              "type": "INT"
+            },
+            "dedicated_resources_min_replica_count": {
+              "type": "INT"
+            },
+            "deployed_model_display_name": {
+              "type": "STRING"
+            },
+            "disable_container_logging": {
+              "type": "STRING"
+            },
+            "enable_access_logging": {
+              "type": "STRING"
+            },
+            "explanation_metadata": {
+              "type": "STRING"
+            },
+            "explanation_parameters": {
+              "type": "STRING"
+            },
+            "service_account": {
+              "type": "STRING"
+            },
+            "traffic_split": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "parameters": {
+            "gcp_resources": {
+              "type": "STRING"
+            }
+          }
+        }
+      },
+      "comp-model-upload": {
+        "executorLabel": "exec-model-upload",
+        "inputDefinitions": {
+          "artifacts": {
+            "unmanaged_container_model": {
+              "artifactType": {
+                "schemaTitle": "google.UnmanagedContainerModel",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "artifact_uri": {
+              "type": "STRING"
+            },
+            "description": {
+              "type": "STRING"
+            },
+            "display_name": {
+              "type": "STRING"
+            },
+            "encryption_spec_key_name": {
+              "type": "STRING"
+            },
+            "explanation_metadata": {
+              "type": "STRING"
+            },
+            "explanation_parameters": {
+              "type": "STRING"
+            },
+            "instance_schema_uri": {
+              "type": "STRING"
+            },
+            "labels": {
+              "type": "STRING"
+            },
+            "location": {
+              "type": "STRING"
+            },
+            "parameters_schema_uri": {
+              "type": "STRING"
+            },
+            "prediction_schema_uri": {
+              "type": "STRING"
+            },
+            "project": {
+              "type": "STRING"
+            },
+            "serving_container_args": {
+              "type": "STRING"
+            },
+            "serving_container_command": {
+              "type": "STRING"
+            },
+            "serving_container_environment_variables": {
+              "type": "STRING"
+            },
+            "serving_container_health_route": {
+              "type": "STRING"
+            },
+            "serving_container_image_uri": {
+              "type": "STRING"
+            },
+            "serving_container_ports": {
+              "type": "STRING"
+            },
+            "serving_container_predict_route": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "model": {
+              "artifactType": {
+                "schemaTitle": "google.VertexModel",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "gcp_resources": {
+              "type": "STRING"
+            }
+          }
+        }
+      }
+    },
+    "deploymentSpec": {
+      "executors": {
+        "exec-custom-training-job": {
+          "container": {
+            "args": [
+              "--type",
+              "CustomJob",
+              "--payload",
+              "{\"display_name\": \"{{$.inputs.parameters['display_name']}}\", \"job_spec\": {\"worker_pool_specs\": {{$.inputs.parameters['worker_pool_specs']}}, \"scheduling\": {\"timeout\": \"{{$.inputs.parameters['timeout']}}\", \"restart_job_on_worker_restart\": \"{{$.inputs.parameters['restart_job_on_worker_restart']}}\"}, \"service_account\": \"{{$.inputs.parameters['service_account']}}\", \"tensorboard\": \"{{$.inputs.parameters['tensorboard']}}\", \"enable_web_access\": \"{{$.inputs.parameters['enable_web_access']}}\", \"network\": \"{{$.inputs.parameters['network']}}\", \"reserved_ip_ranges\": {{$.inputs.parameters['reserved_ip_ranges']}}, \"base_output_directory\": {\"output_uri_prefix\": \"{{$.inputs.parameters['base_output_directory']}}\"}}, \"labels\": {{$.inputs.parameters['labels']}}, \"encryption_spec\": {\"kms_key_name\":\"{{$.inputs.parameters['encryption_spec_key_name']}}\"}}",
+              "--project",
+              "{{$.inputs.parameters['project']}}",
+              "--location",
+              "{{$.inputs.parameters['location']}}",
+              "--gcp_resources",
+              "{{$.outputs.parameters['gcp_resources'].output_file}}"
+            ],
+            "command": [
+              "python3",
+              "-u",
+              "-m",
+              "google_cloud_pipeline_components.container.v1.gcp_launcher.launcher"
+            ],
+            "image": "gcr.io/ml-pipeline/google-cloud-pipeline-components:1.0.9"
+          }
+        },
+        "exec-endpoint-create": {
+          "container": {
+            "args": [
+              "--type",
+              "CreateEndpoint",
+              "--payload",
+              "{\"display_name\": \"{{$.inputs.parameters['display_name']}}\", \"description\": \"{{$.inputs.parameters['description']}}\", \"labels\": {{$.inputs.parameters['labels']}}, \"encryption_spec\": {\"kms_key_name\":\"{{$.inputs.parameters['encryption_spec_key_name']}}\"}, \"network\": \"{{$.inputs.parameters['network']}}\"}",
+              "--project",
+              "{{$.inputs.parameters['project']}}",
+              "--location",
+              "{{$.inputs.parameters['location']}}",
+              "--gcp_resources",
+              "{{$.outputs.parameters['gcp_resources'].output_file}}",
+              "--executor_input",
+              "{{$}}"
+            ],
+            "command": [
+              "python3",
+              "-u",
+              "-m",
+              "google_cloud_pipeline_components.container.v1.gcp_launcher.launcher"
+            ],
+            "image": "gcr.io/ml-pipeline/google-cloud-pipeline-components:1.0.9"
+          }
+        },
+        "exec-get-train-job-details": {
+          "container": {
+            "args": [
+              "--executor_input",
+              "{{$}}",
+              "--function_to_execute",
+              "get_train_job_details"
+            ],
+            "command": [
+              "sh",
+              "-c",
+              "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'pandas' 'gcsfs' 'kfp==1.8.12' && \"$0\" \"$@\"\n",
+              "sh",
+              "-ec",
+              "program_path=$(mktemp -d)\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\npython3 -m kfp.v2.components.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+              "\nimport kfp\nfrom kfp.v2 import dsl\nfrom kfp.v2.dsl import *\nfrom typing import *\n\ndef get_train_job_details(\n    model_dir: str,\n    model_display_name: str,\n    model: Output[Model],\n    metrics: Output[Metrics],\n    eval_metric_key: str\n    ) -> NamedTuple(\n    \"Outputs\", [(\"eval_metric\", float)]\n):\n    import pandas as pd\n    import logging\n    from collections import namedtuple\n\n    metrics_uri = \"{}/model/xgboost/all_results.json\".format(model_dir)\n    metrics_df = pd.read_json(metrics_uri, typ=\"series\")\n    for k,v in metrics_df.items():\n        logging.info(f\"    {k} -> {v}\")\n        metrics.log_metric(k, min(v.values()))\n\n    eval_metric = (min(metrics_df[eval_metric_key].values()) if eval_metric_key in metrics_df.keys() else None)\n    model.metadata[eval_metric_key] = eval_metric\n    outputs = namedtuple(\"Outputs\", [\"eval_metric\"])\n\n    return outputs(eval_metric)\n\n"
+            ],
+            "image": "python:3.7"
+          }
+        },
+        "exec-importer": {
+          "importer": {
+            "artifactUri": {
+              "constantValue": {
+                "stringValue": "gs://vtx-models/model/xgboost"
+              }
+            },
+            "metadata": {
+              "containerSpec": {
+                "env": [
+                  {
+                    "name": "PROJECT_ID",
+                    "value": "jchavezar-demo"
+                  }
+                ],
+                "healthRoute": "/health",
+                "imageUri": "us-central1-docker.pkg.dev/jchavezar-demo/predictions/prediction:latest",
+                "ports": [
+                  {
+                    "containerPort": 8080.0
+                  }
+                ],
+                "predictRoute": "/predict"
+              }
+            },
+            "typeSchema": {
+              "schemaTitle": "google.UnmanagedContainerModel",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        },
+        "exec-model-deploy": {
+          "container": {
+            "args": [
+              "--type",
+              "DeployModel",
+              "--payload",
+              "{\"endpoint\": \"{{$.inputs.artifacts['endpoint'].metadata['resourceName']}}\", \"traffic_split\": {{$.inputs.parameters['traffic_split']}}, \"deployed_model\": {\"model\": \"{{$.inputs.artifacts['model'].metadata['resourceName']}}\", \"dedicated_resources\": {\"machine_spec\": {\"machine_type\": \"{{$.inputs.parameters['dedicated_resources_machine_type']}}\", \"accelerator_type\": \"{{$.inputs.parameters['dedicated_resources_accelerator_type']}}\", \"accelerator_count\": {{$.inputs.parameters['dedicated_resources_accelerator_count']}}}, \"min_replica_count\": {{$.inputs.parameters['dedicated_resources_min_replica_count']}}, \"max_replica_count\": {{$.inputs.parameters['dedicated_resources_max_replica_count']}}}, \"automatic_resources\": {\"min_replica_count\": {{$.inputs.parameters['automatic_resources_min_replica_count']}}, \"max_replica_count\": {{$.inputs.parameters['automatic_resources_max_replica_count']}}}, \"service_account\": \"{{$.inputs.parameters['service_account']}}\", \"disable_container_logging\": {{$.inputs.parameters['disable_container_logging']}}, \"enable_access_logging\": {{$.inputs.parameters['enable_access_logging']}}, \"explanation_spec\": {\"parameters\": {{$.inputs.parameters['explanation_parameters']}}, \"metadata\": {{$.inputs.parameters['explanation_metadata']}}}}}",
+              "--project",
+              "",
+              "--location",
+              "",
+              "--gcp_resources",
+              "{{$.outputs.parameters['gcp_resources'].output_file}}"
+            ],
+            "command": [
+              "python3",
+              "-u",
+              "-m",
+              "google_cloud_pipeline_components.container.v1.gcp_launcher.launcher"
+            ],
+            "image": "gcr.io/ml-pipeline/google-cloud-pipeline-components:1.0.9"
+          }
+        },
+        "exec-model-upload": {
+          "container": {
+            "args": [
+              "--type",
+              "UploadModel",
+              "--payload",
+              "{\"display_name\": \"{{$.inputs.parameters['display_name']}}\", \"description\": \"{{$.inputs.parameters['description']}}\", \"predict_schemata\": {\"instance_schema_uri\": \"{{$.inputs.parameters['instance_schema_uri']}}\", \"parameters_schema_uri\": \"{{$.inputs.parameters['parameters_schema_uri']}}\", \"prediction_schema_uri\": \"{{$.inputs.parameters['prediction_schema_uri']}}\"}, \"container_spec\": {\"image_uri\": \"{{$.inputs.parameters['serving_container_image_uri']}}\", \"command\": {{$.inputs.parameters['serving_container_command']}}, \"args\": {{$.inputs.parameters['serving_container_args']}}, \"env\": {{$.inputs.parameters['serving_container_environment_variables']}}, \"ports\": {{$.inputs.parameters['serving_container_ports']}}, \"predict_route\": \"{{$.inputs.parameters['serving_container_predict_route']}}\", \"health_route\": \"{{$.inputs.parameters['serving_container_health_route']}}\"}, \"artifact_uri\": \"{{$.inputs.parameters['artifact_uri']}}\", \"explanation_spec\": {\"parameters\": {{$.inputs.parameters['explanation_parameters']}}, \"metadata\": {{$.inputs.parameters['explanation_metadata']}}}, \"encryption_spec\": {\"kms_key_name\":\"{{$.inputs.parameters['encryption_spec_key_name']}}\"}, \"labels\": {{$.inputs.parameters['labels']}}}",
+              "--project",
+              "{{$.inputs.parameters['project']}}",
+              "--location",
+              "{{$.inputs.parameters['location']}}",
+              "--gcp_resources",
+              "{{$.outputs.parameters['gcp_resources'].output_file}}",
+              "--executor_input",
+              "{{$}}"
+            ],
+            "command": [
+              "python3",
+              "-u",
+              "-m",
+              "google_cloud_pipeline_components.container.v1.gcp_launcher.launcher"
+            ],
+            "image": "gcr.io/ml-pipeline/google-cloud-pipeline-components:1.0.9"
+          }
+        }
+      }
+    },
+    "pipelineInfo": {
+      "name": "dask-gpu-1"
+    },
+    "root": {
+      "dag": {
+        "outputs": {
+          "artifacts": {
+            "get-train-job-details-metrics": {
+              "artifactSelectors": [
+                {
+                  "outputArtifactKey": "metrics",
+                  "producerSubtask": "get-train-job-details"
+                }
+              ]
+            }
+          }
+        },
+        "tasks": {
+          "condition-model-deploy-decision-1": {
+            "componentRef": {
+              "name": "comp-condition-model-deploy-decision-1"
+            },
+            "dependentTasks": [
+              "get-train-job-details"
+            ],
+            "inputs": {
+              "parameters": {
+                "pipelineparam--eval_acc_threshold": {
+                  "componentInputParameter": "eval_acc_threshold"
+                },
+                "pipelineparam--get-train-job-details-eval_metric": {
+                  "taskOutputParameter": {
+                    "outputParameterKey": "eval_metric",
+                    "producerTask": "get-train-job-details"
+                  }
+                },
+                "pipelineparam--project_id": {
+                  "componentInputParameter": "project_id"
+                }
+              }
+            },
+            "taskInfo": {
+              "name": "condition-model-deploy-decision-1"
+            },
+            "triggerPolicy": {
+              "condition": "inputs.parameters['pipelineparam--get-train-job-details-eval_metric'].double_value > inputs.parameters['pipelineparam--eval_acc_threshold'].double_value"
+            }
+          },
+          "custom-training-job": {
+            "cachingOptions": {
+              "enableCache": true
+            },
+            "componentRef": {
+              "name": "comp-custom-training-job"
+            },
+            "inputs": {
+              "parameters": {
+                "base_output_directory": {
+                  "componentInputParameter": "model_file_bucket"
+                },
+                "display_name": {
+                  "componentInputParameter": "custom_train_name"
+                },
+                "enable_web_access": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "false"
+                    }
+                  }
+                },
+                "encryption_spec_key_name": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": ""
+                    }
+                  }
+                },
+                "labels": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "{}"
+                    }
+                  }
+                },
+                "location": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "us-central1"
+                    }
+                  }
+                },
+                "network": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": ""
+                    }
+                  }
+                },
+                "project": {
+                  "componentInputParameter": "project_id"
+                },
+                "reserved_ip_ranges": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "[]"
+                    }
+                  }
+                },
+                "restart_job_on_worker_restart": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "false"
+                    }
+                  }
+                },
+                "service_account": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": ""
+                    }
+                  }
+                },
+                "tensorboard": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": ""
+                    }
+                  }
+                },
+                "timeout": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "604800s"
+                    }
+                  }
+                },
+                "worker_pool_specs": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "[{\"machine_spec\": {\"machine_type\": \"a2-highgpu-1g\", \"accelerator_type\": \"NVIDIA_TESLA_A100\", \"accelerator_count\": 1}, \"replica_count\": \"1\", \"container_spec\": {\"image_uri\": \"us-central1-docker.pkg.dev/jchavezar-demo/trainings/train_gpu_xgb:latest\", \"env\": [{\"name\": \"AIP_TRAINING_DATA_URI\", \"value\": \"test\"}], \"command\": [\"python\", \"trainer/task.py\"], \"args\": [\"--dataset_source\", \"gs://vtx-datasets-public/cover_type_4Mrows.csv\", \"--model-name\", \"model.json\"]}}]"
+                    }
+                  }
+                }
+              }
+            },
+            "taskInfo": {
+              "name": "custom-training-job"
+            }
+          },
+          "get-train-job-details": {
+            "cachingOptions": {
+              "enableCache": true
+            },
+            "componentRef": {
+              "name": "comp-get-train-job-details"
+            },
+            "dependentTasks": [
+              "custom-training-job"
+            ],
+            "inputs": {
+              "parameters": {
+                "eval_metric_key": {
+                  "componentInputParameter": "eval_metric_key"
+                },
+                "model_dir": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "gs://vtx-pipe-models"
+                    }
+                  }
+                },
+                "model_display_name": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "xgboost-dask"
+                    }
+                  }
+                }
+              }
+            },
+            "taskInfo": {
+              "name": "get-train-job-details"
+            }
+          }
+        }
+      },
+      "inputDefinitions": {
+        "parameters": {
+          "custom_train_name": {
+            "type": "STRING"
+          },
+          "eval_acc_threshold": {
+            "type": "DOUBLE"
+          },
+          "eval_metric_key": {
+            "type": "STRING"
+          },
+          "model_file_bucket": {
+            "type": "STRING"
+          },
+          "project_id": {
+            "type": "STRING"
+          },
+          "region": {
+            "type": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "artifacts": {
+          "get-train-job-details-metrics": {
+            "artifactType": {
+              "schemaTitle": "system.Metrics",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        }
+      }
+    },
+    "schemaVersion": "2.0.0",
+    "sdkVersion": "kfp-1.8.12"
+  },
+  "runtimeConfig": {}
+}
