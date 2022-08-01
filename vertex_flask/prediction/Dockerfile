@@ -2,10 +2,9 @@ FROM python:3.7-buster
 
 RUN mkdir my-model
 
+COPY app.py ./app.py
 COPY requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt 
-
-COPY app.py ./app.py
 
 # Flask Env Variable
 ENV FLASK_APP=app
