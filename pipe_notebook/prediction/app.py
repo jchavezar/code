@@ -18,7 +18,7 @@ with open(fname, "wb") as model:
     )
 
 # Loading model
-print("Loading model from: {}".format(fname))
+print("[INFO] ------ Loading model from: {}".format(fname))
 model = xgb.Booster(model_file=fname)
 
 # Creation of the Flask app

@@ -1,0 +1,1083 @@
+{
+  "pipelineSpec": {
+    "components": {
+      "comp-condition-model-deploy-decision-1": {
+        "dag": {
+          "tasks": {
+            "endpoint-create": {
+              "cachingOptions": {
+                "enableCache": true
+              },
+              "componentRef": {
+                "name": "comp-endpoint-create"
+              },
+              "inputs": {
+                "parameters": {
+                  "description": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "display_name": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "pipelines-created-endpoint"
+                      }
+                    }
+                  },
+                  "encryption_spec_key_name": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "labels": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "location": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "us-central1"
+                      }
+                    }
+                  },
+                  "network": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "project": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "jchavezar-demo"
+                      }
+                    }
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "endpoint-create"
+              }
+            },
+            "importer": {
+              "cachingOptions": {
+                "enableCache": true
+              },
+              "componentRef": {
+                "name": "comp-importer"
+              },
+              "inputs": {
+                "parameters": {
+                  "uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "gs://vtx-models/lightgbm"
+                      }
+                    }
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "importer"
+              }
+            },
+            "model-deploy": {
+              "cachingOptions": {},
+              "componentRef": {
+                "name": "comp-model-deploy"
+              },
+              "dependentTasks": [
+                "endpoint-create",
+                "model-upload"
+              ],
+              "inputs": {
+                "artifacts": {
+                  "endpoint": {
+                    "taskOutputArtifact": {
+                      "outputArtifactKey": "endpoint",
+                      "producerTask": "endpoint-create"
+                    }
+                  },
+                  "model": {
+                    "taskOutputArtifact": {
+                      "outputArtifactKey": "model",
+                      "producerTask": "model-upload"
+                    }
+                  }
+                },
+                "parameters": {
+                  "automatic_resources_max_replica_count": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "0"
+                      }
+                    }
+                  },
+                  "automatic_resources_min_replica_count": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "0"
+                      }
+                    }
+                  },
+                  "dedicated_resources_accelerator_count": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "0"
+                      }
+                    }
+                  },
+                  "dedicated_resources_accelerator_type": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "dedicated_resources_machine_type": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "n1-standard-2"
+                      }
+                    }
+                  },
+                  "dedicated_resources_max_replica_count": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "1"
+                      }
+                    }
+                  },
+                  "dedicated_resources_min_replica_count": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "1"
+                      }
+                    }
+                  },
+                  "deployed_model_display_name": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "lightgbm_model_end"
+                      }
+                    }
+                  },
+                  "disable_container_logging": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "0"
+                      }
+                    }
+                  },
+                  "enable_access_logging": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "intValue": "0"
+                      }
+                    }
+                  },
+                  "explanation_metadata": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "explanation_parameters": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "service_account": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "traffic_split": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{\"0\": \"100\"}"
+                      }
+                    }
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "model-deploy"
+              }
+            },
+            "model-upload": {
+              "cachingOptions": {
+                "enableCache": true
+              },
+              "componentRef": {
+                "name": "comp-model-upload"
+              },
+              "dependentTasks": [
+                "importer"
+              ],
+              "inputs": {
+                "artifacts": {
+                  "unmanaged_container_model": {
+                    "taskOutputArtifact": {
+                      "outputArtifactKey": "artifact",
+                      "producerTask": "importer"
+                    }
+                  }
+                },
+                "parameters": {
+                  "artifact_uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "description": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "display_name": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "lightgbm-model"
+                      }
+                    }
+                  },
+                  "encryption_spec_key_name": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "explanation_metadata": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "explanation_parameters": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "instance_schema_uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "labels": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "{}"
+                      }
+                    }
+                  },
+                  "location": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "us-central1"
+                      }
+                    }
+                  },
+                  "parameters_schema_uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "prediction_schema_uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "project": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "jchavezar-demo"
+                      }
+                    }
+                  },
+                  "serving_container_args": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "[]"
+                      }
+                    }
+                  },
+                  "serving_container_command": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "[]"
+                      }
+                    }
+                  },
+                  "serving_container_environment_variables": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "[]"
+                      }
+                    }
+                  },
+                  "serving_container_health_route": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "serving_container_image_uri": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  },
+                  "serving_container_ports": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": "[]"
+                      }
+                    }
+                  },
+                  "serving_container_predict_route": {
+                    "runtimeValue": {
+                      "constantValue": {
+                        "stringValue": ""
+                      }
+                    }
+                  }
+                }
+              },
+              "taskInfo": {
+                "name": "model-upload"
+              }
+            }
+          }
+        },
+        "inputDefinitions": {
+          "parameters": {
+            "pipelineparam--eval_acc_threshold": {
+              "type": "DOUBLE"
+            },
+            "pipelineparam--evaluate-model-eval_metric": {
+              "type": "DOUBLE"
+            }
+          }
+        }
+      },
+      "comp-endpoint-create": {
+        "executorLabel": "exec-endpoint-create",
+        "inputDefinitions": {
+          "parameters": {
+            "description": {
+              "type": "STRING"
+            },
+            "display_name": {
+              "type": "STRING"
+            },
+            "encryption_spec_key_name": {
+              "type": "STRING"
+            },
+            "labels": {
+              "type": "STRING"
+            },
+            "location": {
+              "type": "STRING"
+            },
+            "network": {
+              "type": "STRING"
+            },
+            "project": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "endpoint": {
+              "artifactType": {
+                "schemaTitle": "google.VertexEndpoint",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "gcp_resources": {
+              "type": "STRING"
+            }
+          }
+        }
+      },
+      "comp-evaluate-model": {
+        "executorLabel": "exec-evaluate-model",
+        "inputDefinitions": {
+          "artifacts": {
+            "dataset_xtest": {
+              "artifactType": {
+                "schemaTitle": "system.Artifact",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "dataset_ytest": {
+              "artifactType": {
+                "schemaTitle": "system.Artifact",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "model_uri": {
+              "type": "STRING"
+            },
+            "project_id": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "kpi": {
+              "artifactType": {
+                "schemaTitle": "system.Metrics",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "metrics": {
+              "artifactType": {
+                "schemaTitle": "system.ClassificationMetrics",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "eval_metric": {
+              "type": "DOUBLE"
+            }
+          }
+        }
+      },
+      "comp-get-data": {
+        "executorLabel": "exec-get-data",
+        "inputDefinitions": {
+          "parameters": {
+            "datasource": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "dataset_xtest": {
+              "artifactType": {
+                "schemaTitle": "system.Artifact",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "dataset_xtrain": {
+              "artifactType": {
+                "schemaTitle": "system.Artifact",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "dataset_ytest": {
+              "artifactType": {
+                "schemaTitle": "system.Artifact",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "dataset_ytrain": {
+              "artifactType": {
+                "schemaTitle": "system.Artifact",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          }
+        }
+      },
+      "comp-importer": {
+        "executorLabel": "exec-importer",
+        "inputDefinitions": {
+          "parameters": {
+            "uri": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "artifact": {
+              "artifactType": {
+                "schemaTitle": "google.UnmanagedContainerModel",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          }
+        }
+      },
+      "comp-model-deploy": {
+        "executorLabel": "exec-model-deploy",
+        "inputDefinitions": {
+          "artifacts": {
+            "endpoint": {
+              "artifactType": {
+                "schemaTitle": "google.VertexEndpoint",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "model": {
+              "artifactType": {
+                "schemaTitle": "google.VertexModel",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "automatic_resources_max_replica_count": {
+              "type": "INT"
+            },
+            "automatic_resources_min_replica_count": {
+              "type": "INT"
+            },
+            "dedicated_resources_accelerator_count": {
+              "type": "INT"
+            },
+            "dedicated_resources_accelerator_type": {
+              "type": "STRING"
+            },
+            "dedicated_resources_machine_type": {
+              "type": "STRING"
+            },
+            "dedicated_resources_max_replica_count": {
+              "type": "INT"
+            },
+            "dedicated_resources_min_replica_count": {
+              "type": "INT"
+            },
+            "deployed_model_display_name": {
+              "type": "STRING"
+            },
+            "disable_container_logging": {
+              "type": "STRING"
+            },
+            "enable_access_logging": {
+              "type": "STRING"
+            },
+            "explanation_metadata": {
+              "type": "STRING"
+            },
+            "explanation_parameters": {
+              "type": "STRING"
+            },
+            "service_account": {
+              "type": "STRING"
+            },
+            "traffic_split": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "parameters": {
+            "gcp_resources": {
+              "type": "STRING"
+            }
+          }
+        }
+      },
+      "comp-model-upload": {
+        "executorLabel": "exec-model-upload",
+        "inputDefinitions": {
+          "artifacts": {
+            "unmanaged_container_model": {
+              "artifactType": {
+                "schemaTitle": "google.UnmanagedContainerModel",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "artifact_uri": {
+              "type": "STRING"
+            },
+            "description": {
+              "type": "STRING"
+            },
+            "display_name": {
+              "type": "STRING"
+            },
+            "encryption_spec_key_name": {
+              "type": "STRING"
+            },
+            "explanation_metadata": {
+              "type": "STRING"
+            },
+            "explanation_parameters": {
+              "type": "STRING"
+            },
+            "instance_schema_uri": {
+              "type": "STRING"
+            },
+            "labels": {
+              "type": "STRING"
+            },
+            "location": {
+              "type": "STRING"
+            },
+            "parameters_schema_uri": {
+              "type": "STRING"
+            },
+            "prediction_schema_uri": {
+              "type": "STRING"
+            },
+            "project": {
+              "type": "STRING"
+            },
+            "serving_container_args": {
+              "type": "STRING"
+            },
+            "serving_container_command": {
+              "type": "STRING"
+            },
+            "serving_container_environment_variables": {
+              "type": "STRING"
+            },
+            "serving_container_health_route": {
+              "type": "STRING"
+            },
+            "serving_container_image_uri": {
+              "type": "STRING"
+            },
+            "serving_container_ports": {
+              "type": "STRING"
+            },
+            "serving_container_predict_route": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "artifacts": {
+            "model": {
+              "artifactType": {
+                "schemaTitle": "google.VertexModel",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "gcp_resources": {
+              "type": "STRING"
+            }
+          }
+        }
+      },
+      "comp-train": {
+        "executorLabel": "exec-train",
+        "inputDefinitions": {
+          "artifacts": {
+            "dataset_xtrain": {
+              "artifactType": {
+                "schemaTitle": "system.Artifact",
+                "schemaVersion": "0.0.1"
+              }
+            },
+            "dataset_ytrain": {
+              "artifactType": {
+                "schemaTitle": "system.Artifact",
+                "schemaVersion": "0.0.1"
+              }
+            }
+          },
+          "parameters": {
+            "model_uri": {
+              "type": "STRING"
+            },
+            "project_id": {
+              "type": "STRING"
+            }
+          }
+        }
+      }
+    },
+    "deploymentSpec": {
+      "executors": {
+        "exec-endpoint-create": {
+          "container": {
+            "args": [
+              "--type",
+              "CreateEndpoint",
+              "--payload",
+              "{\"display_name\": \"{{$.inputs.parameters['display_name']}}\", \"description\": \"{{$.inputs.parameters['description']}}\", \"labels\": {{$.inputs.parameters['labels']}}, \"encryption_spec\": {\"kms_key_name\":\"{{$.inputs.parameters['encryption_spec_key_name']}}\"}, \"network\": \"{{$.inputs.parameters['network']}}\"}",
+              "--project",
+              "{{$.inputs.parameters['project']}}",
+              "--location",
+              "{{$.inputs.parameters['location']}}",
+              "--gcp_resources",
+              "{{$.outputs.parameters['gcp_resources'].output_file}}",
+              "--executor_input",
+              "{{$}}"
+            ],
+            "command": [
+              "python3",
+              "-u",
+              "-m",
+              "google_cloud_pipeline_components.container.v1.gcp_launcher.launcher"
+            ],
+            "image": "gcr.io/ml-pipeline/google-cloud-pipeline-components:1.0.9"
+          }
+        },
+        "exec-evaluate-model": {
+          "container": {
+            "args": [
+              "--executor_input",
+              "{{$}}",
+              "--function_to_execute",
+              "evaluate_model"
+            ],
+            "command": [
+              "sh",
+              "-c",
+              "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'pandas' 'gcsfs' 'lightgbm' 'sklearn' 'google-cloud-storage' 'kfp==1.8.12' && \"$0\" \"$@\"\n",
+              "sh",
+              "-ec",
+              "program_path=$(mktemp -d)\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\npython3 -m kfp.v2.components.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+              "\nimport kfp\nfrom kfp.v2 import dsl\nfrom kfp.v2.dsl import *\nfrom typing import *\n\ndef evaluate_model(\n    project_id: str,\n    dataset_xtest: Input[Artifact],\n    dataset_ytest: Input[Artifact],\n    model_uri: str,\n    metrics: Output[ClassificationMetrics],\n    kpi: Output[Metrics]\n    ) -> NamedTuple(\n    \"Outputs\", [(\"eval_metric\", float)]\n):\n    import pandas as pd\n    import pickle\n    from google.cloud import storage\n    from sklearn.metrics import roc_curve, confusion_matrix, accuracy_score\n    from collections import namedtuple\n\n    X_test = pd.read_csv(dataset_xtest.path+\".csv\")\n    y_test = pd.read_csv(dataset_ytest.path+\".csv\")\n\n    # Load Model File\n\n    file_name = '/tmp/model.pkl'\n\n    storage_client = storage.Client(project=project_id)\n    _bucket = model_uri.split('/')[2]\n    _suffix = \"/\".join(model_uri.split('/')[3:]).rstrip(\"/\")\n    bucket = storage_client.get_bucket(_bucket)\n    blob = bucket.blob(f'{_suffix}/model.pkl')\n    blob.download_to_filename(file_name)\n\n    with open(file_name, 'rb') as file:\n        model = pickle.load(file)\n\n    y_pred = model.predict(X_test)\n    accuracy = accuracy_score(y_pred, y_test)\n    print('LightGBM Model accuracy score: {0:0.4f}'.format(accuracy))\n\n    y_scores = model.predict_proba(X_test)[:,1]\n    fpr, tpr, thresholds = roc_curve(\n        y_true=y_test.to_numpy(), \n        y_score=y_scores, \n        pos_label=True)\n    metrics.log_roc_curve(fpr.tolist(), tpr.tolist(), thresholds.tolist())\n\n    metrics.log_confusion_matrix(\n        [\"False\", \"True\"],\n        confusion_matrix(\n            y_test, y_pred\n        ).tolist(),\n    )\n\n    kpi.log_metric(\"accuracy\", float(accuracy))\n    outputs = namedtuple(\"Outputs\", [\"eval_metric\"])\n\n    return outputs(float(accuracy))\n\n"
+            ],
+            "image": "python:3.7"
+          }
+        },
+        "exec-get-data": {
+          "container": {
+            "args": [
+              "--executor_input",
+              "{{$}}",
+              "--function_to_execute",
+              "get_data"
+            ],
+            "command": [
+              "sh",
+              "-c",
+              "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'pandas' 'gcsfs' 'sklearn' 'kfp==1.8.12' && \"$0\" \"$@\"\n",
+              "sh",
+              "-ec",
+              "program_path=$(mktemp -d)\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\npython3 -m kfp.v2.components.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+              "\nimport kfp\nfrom kfp.v2 import dsl\nfrom kfp.v2.dsl import *\nfrom typing import *\n\ndef get_data(\n    datasource: str,\n    dataset_xtrain: Output[Artifact],\n    dataset_ytrain: Output[Artifact],\n    dataset_xtest: Output[Artifact],\n    dataset_ytest: Output[Artifact]\n    ):\n    import pandas as pd\n    from sklearn.model_selection import train_test_split\n\n    df = pd.read_csv(datasource)\n    X = df[['mean_radius','mean_texture','mean_perimeter','mean_area','mean_smoothness']]\n    y = df['diagnosis']\n    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 0)\n\n    X_train.to_csv(dataset_xtrain.path + \".csv\", index=False, encoding='utf-8-sig')\n    X_test.to_csv(dataset_xtest.path + \".csv\", index=False, encoding='utf-8-sig')\n    y_train.to_csv(dataset_ytrain.path + \".csv\", index=False, encoding='utf-8-sig')\n    y_test.to_csv(dataset_ytest.path + \".csv\", index=False, encoding='utf-8-sig')\n\n"
+            ],
+            "image": "python:3.7"
+          }
+        },
+        "exec-importer": {
+          "importer": {
+            "artifactUri": {
+              "constantValue": {
+                "stringValue": "gs://vtx-models/lightgbm"
+              }
+            },
+            "metadata": {
+              "containerSpec": {
+                "env": [
+                  {
+                    "name": "PROJECT_ID",
+                    "value": "jchavezar-demo"
+                  }
+                ],
+                "healthRoute": "/health_check",
+                "imageUri": "us-central1-docker.pkg.dev/jchavezar-demo/predictions/pred_lightgbm_cpu:latest",
+                "ports": [
+                  {
+                    "containerPort": 8080.0
+                  }
+                ],
+                "predictRoute": "/predict"
+              }
+            },
+            "typeSchema": {
+              "schemaTitle": "google.UnmanagedContainerModel",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        },
+        "exec-model-deploy": {
+          "container": {
+            "args": [
+              "--type",
+              "DeployModel",
+              "--payload",
+              "{\"endpoint\": \"{{$.inputs.artifacts['endpoint'].metadata['resourceName']}}\", \"traffic_split\": {{$.inputs.parameters['traffic_split']}}, \"deployed_model\": {\"model\": \"{{$.inputs.artifacts['model'].metadata['resourceName']}}\", \"dedicated_resources\": {\"machine_spec\": {\"machine_type\": \"{{$.inputs.parameters['dedicated_resources_machine_type']}}\", \"accelerator_type\": \"{{$.inputs.parameters['dedicated_resources_accelerator_type']}}\", \"accelerator_count\": {{$.inputs.parameters['dedicated_resources_accelerator_count']}}}, \"min_replica_count\": {{$.inputs.parameters['dedicated_resources_min_replica_count']}}, \"max_replica_count\": {{$.inputs.parameters['dedicated_resources_max_replica_count']}}}, \"automatic_resources\": {\"min_replica_count\": {{$.inputs.parameters['automatic_resources_min_replica_count']}}, \"max_replica_count\": {{$.inputs.parameters['automatic_resources_max_replica_count']}}}, \"service_account\": \"{{$.inputs.parameters['service_account']}}\", \"disable_container_logging\": {{$.inputs.parameters['disable_container_logging']}}, \"enable_access_logging\": {{$.inputs.parameters['enable_access_logging']}}, \"explanation_spec\": {\"parameters\": {{$.inputs.parameters['explanation_parameters']}}, \"metadata\": {{$.inputs.parameters['explanation_metadata']}}}}}",
+              "--project",
+              "",
+              "--location",
+              "",
+              "--gcp_resources",
+              "{{$.outputs.parameters['gcp_resources'].output_file}}"
+            ],
+            "command": [
+              "python3",
+              "-u",
+              "-m",
+              "google_cloud_pipeline_components.container.v1.gcp_launcher.launcher"
+            ],
+            "image": "gcr.io/ml-pipeline/google-cloud-pipeline-components:1.0.9"
+          }
+        },
+        "exec-model-upload": {
+          "container": {
+            "args": [
+              "--type",
+              "UploadModel",
+              "--payload",
+              "{\"display_name\": \"{{$.inputs.parameters['display_name']}}\", \"description\": \"{{$.inputs.parameters['description']}}\", \"predict_schemata\": {\"instance_schema_uri\": \"{{$.inputs.parameters['instance_schema_uri']}}\", \"parameters_schema_uri\": \"{{$.inputs.parameters['parameters_schema_uri']}}\", \"prediction_schema_uri\": \"{{$.inputs.parameters['prediction_schema_uri']}}\"}, \"container_spec\": {\"image_uri\": \"{{$.inputs.parameters['serving_container_image_uri']}}\", \"command\": {{$.inputs.parameters['serving_container_command']}}, \"args\": {{$.inputs.parameters['serving_container_args']}}, \"env\": {{$.inputs.parameters['serving_container_environment_variables']}}, \"ports\": {{$.inputs.parameters['serving_container_ports']}}, \"predict_route\": \"{{$.inputs.parameters['serving_container_predict_route']}}\", \"health_route\": \"{{$.inputs.parameters['serving_container_health_route']}}\"}, \"artifact_uri\": \"{{$.inputs.parameters['artifact_uri']}}\", \"explanation_spec\": {\"parameters\": {{$.inputs.parameters['explanation_parameters']}}, \"metadata\": {{$.inputs.parameters['explanation_metadata']}}}, \"encryption_spec\": {\"kms_key_name\":\"{{$.inputs.parameters['encryption_spec_key_name']}}\"}, \"labels\": {{$.inputs.parameters['labels']}}}",
+              "--project",
+              "{{$.inputs.parameters['project']}}",
+              "--location",
+              "{{$.inputs.parameters['location']}}",
+              "--gcp_resources",
+              "{{$.outputs.parameters['gcp_resources'].output_file}}",
+              "--executor_input",
+              "{{$}}"
+            ],
+            "command": [
+              "python3",
+              "-u",
+              "-m",
+              "google_cloud_pipeline_components.container.v1.gcp_launcher.launcher"
+            ],
+            "image": "gcr.io/ml-pipeline/google-cloud-pipeline-components:1.0.9"
+          }
+        },
+        "exec-train": {
+          "container": {
+            "args": [
+              "--executor_input",
+              "{{$}}",
+              "--function_to_execute",
+              "train"
+            ],
+            "command": [
+              "sh",
+              "-c",
+              "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip || python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet     --no-warn-script-location 'pandas' 'gcsfs' 'lightgbm' 'google-cloud-storage' 'kfp==1.8.12' && \"$0\" \"$@\"\n",
+              "sh",
+              "-ec",
+              "program_path=$(mktemp -d)\nprintf \"%s\" \"$0\" > \"$program_path/ephemeral_component.py\"\npython3 -m kfp.v2.components.executor_main                         --component_module_path                         \"$program_path/ephemeral_component.py\"                         \"$@\"\n",
+              "\nimport kfp\nfrom kfp.v2 import dsl\nfrom kfp.v2.dsl import *\nfrom typing import *\n\ndef train(\n    project_id: str,\n    dataset_xtrain: Input[Artifact],\n    dataset_ytrain: Input[Artifact],\n    model_uri: str\n    ):\n    import pickle\n    import numpy as np\n    import pandas as pd\n    import lightgbm as lgb\n    from google.cloud import storage\n\n    X_train = pd.read_csv(dataset_xtrain.path+\".csv\")\n    y_train = pd.read_csv(dataset_ytrain.path+\".csv\").diagnosis\n    clf = lgb.LGBMClassifier()\n    clf.fit(X_train, y_train)\n\n    file_name = \"/tmp/model.pkl\"\n    with open(file_name, 'wb') as file:\n        pickle.dump(clf, file)\n\n    storage_client = storage.Client(project=project_id)\n    _bucket = model_uri.split('/')[2]\n    _suffix = \"/\".join(model_uri.split('/')[3:]).rstrip(\"/\")\n    bucket = storage_client.get_bucket(_bucket)\n    print(bucket)\n    print(_suffix)\n    blob = bucket.blob(f'{_suffix}/model.pkl')\n    blob.upload_from_filename('/tmp/model.pkl')\n\n"
+            ],
+            "image": "python:3.7"
+          }
+        }
+      }
+    },
+    "pipelineInfo": {
+      "name": "lightgbm-light"
+    },
+    "root": {
+      "dag": {
+        "outputs": {
+          "artifacts": {
+            "evaluate-model-kpi": {
+              "artifactSelectors": [
+                {
+                  "outputArtifactKey": "kpi",
+                  "producerSubtask": "evaluate-model"
+                }
+              ]
+            },
+            "evaluate-model-metrics": {
+              "artifactSelectors": [
+                {
+                  "outputArtifactKey": "metrics",
+                  "producerSubtask": "evaluate-model"
+                }
+              ]
+            }
+          }
+        },
+        "tasks": {
+          "condition-model-deploy-decision-1": {
+            "componentRef": {
+              "name": "comp-condition-model-deploy-decision-1"
+            },
+            "dependentTasks": [
+              "evaluate-model"
+            ],
+            "inputs": {
+              "parameters": {
+                "pipelineparam--eval_acc_threshold": {
+                  "componentInputParameter": "eval_acc_threshold"
+                },
+                "pipelineparam--evaluate-model-eval_metric": {
+                  "taskOutputParameter": {
+                    "outputParameterKey": "eval_metric",
+                    "producerTask": "evaluate-model"
+                  }
+                }
+              }
+            },
+            "taskInfo": {
+              "name": "condition-model-deploy-decision-1"
+            },
+            "triggerPolicy": {
+              "condition": "inputs.parameters['pipelineparam--evaluate-model-eval_metric'].double_value > inputs.parameters['pipelineparam--eval_acc_threshold'].double_value"
+            }
+          },
+          "evaluate-model": {
+            "cachingOptions": {
+              "enableCache": true
+            },
+            "componentRef": {
+              "name": "comp-evaluate-model"
+            },
+            "dependentTasks": [
+              "get-data",
+              "train"
+            ],
+            "inputs": {
+              "artifacts": {
+                "dataset_xtest": {
+                  "taskOutputArtifact": {
+                    "outputArtifactKey": "dataset_xtest",
+                    "producerTask": "get-data"
+                  }
+                },
+                "dataset_ytest": {
+                  "taskOutputArtifact": {
+                    "outputArtifactKey": "dataset_ytest",
+                    "producerTask": "get-data"
+                  }
+                }
+              },
+              "parameters": {
+                "model_uri": {
+                  "componentInputParameter": "model_uri"
+                },
+                "project_id": {
+                  "componentInputParameter": "project_id"
+                }
+              }
+            },
+            "taskInfo": {
+              "name": "evaluate-model"
+            }
+          },
+          "get-data": {
+            "cachingOptions": {
+              "enableCache": true
+            },
+            "componentRef": {
+              "name": "comp-get-data"
+            },
+            "inputs": {
+              "parameters": {
+                "datasource": {
+                  "componentInputParameter": "datasource"
+                }
+              }
+            },
+            "taskInfo": {
+              "name": "get-data"
+            }
+          },
+          "train": {
+            "cachingOptions": {
+              "enableCache": true
+            },
+            "componentRef": {
+              "name": "comp-train"
+            },
+            "dependentTasks": [
+              "get-data"
+            ],
+            "inputs": {
+              "artifacts": {
+                "dataset_xtrain": {
+                  "taskOutputArtifact": {
+                    "outputArtifactKey": "dataset_xtrain",
+                    "producerTask": "get-data"
+                  }
+                },
+                "dataset_ytrain": {
+                  "taskOutputArtifact": {
+                    "outputArtifactKey": "dataset_ytrain",
+                    "producerTask": "get-data"
+                  }
+                }
+              },
+              "parameters": {
+                "model_uri": {
+                  "componentInputParameter": "model_uri"
+                },
+                "project_id": {
+                  "componentInputParameter": "project_id"
+                }
+              }
+            },
+            "taskInfo": {
+              "name": "train"
+            }
+          }
+        }
+      },
+      "inputDefinitions": {
+        "parameters": {
+          "datasource": {
+            "type": "STRING"
+          },
+          "eval_acc_threshold": {
+            "type": "DOUBLE"
+          },
+          "model_uri": {
+            "type": "STRING"
+          },
+          "project_id": {
+            "type": "STRING"
+          }
+        }
+      },
+      "outputDefinitions": {
+        "artifacts": {
+          "evaluate-model-kpi": {
+            "artifactType": {
+              "schemaTitle": "system.Metrics",
+              "schemaVersion": "0.0.1"
+            }
+          },
+          "evaluate-model-metrics": {
+            "artifactType": {
+              "schemaTitle": "system.ClassificationMetrics",
+              "schemaVersion": "0.0.1"
+            }
+          }
+        }
+      }
+    },
+    "schemaVersion": "2.0.0",
+    "sdkVersion": "kfp-1.8.12"
+  },
+  "runtimeConfig": {}
+}
