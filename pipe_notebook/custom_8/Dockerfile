@@ -7,6 +7,6 @@ RUN pip install google-cloud-bigquery==2.34.4 \
     && pip install pyarrow \
     && pip install cloudml-hypertune
 
-COPY * /main.py
+COPY * /
 
 ENTRYPOINT ["python", "main.py"]
