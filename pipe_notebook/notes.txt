@@ -1,0 +1,19 @@
+'--batch_size',
+default=256,
+type=int,
+help='batch size to build tf.data.Dataset')
+'--learning_rate',
+default=0.001,
+type=float,
+'--num_neurons',
+default=32,
+type=int,
+help='number of units in the first hidden layer')
+'--label_column',
+default='will_buy_on_return_visit',
+type=str,
+help='The column to predict (label/target)')
+'--epochs',
+default=10,
+type=int,
+help='Nubmber of epochs for the training; complete pass over dataset')
