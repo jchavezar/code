@@ -1,6 +1,0 @@
-cloudml-hypertune
-xgboost
-pandas
-gcsfs
-sklearn
-google-cloud-storage
