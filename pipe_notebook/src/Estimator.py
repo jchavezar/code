@@ -61,11 +61,7 @@ class VertexTF:
     
         if os.getenv('CLOUD_ML_PROJECT') is not None:
             project = os.environ['CLOUD_ML_PROJECT']
-
-        # Numerical features.
-        cat_columns = [i for i in self.df if self.df[i].dtypes == 'object' and i != target_column]
-        num_columns = [i for i in self.df if self.df[i].dtypes == 'int64' and i != target_column]
-
+        else: project = self.project_id
         client = bigquery.Client(project=project)
         self.df = client.query(query).to_dataframe()
         self.train, self.val, self.test = np.split(self.df.sample(frac=1), [int(0.8*len(self.df)), int(0.9*len(self.df))])
