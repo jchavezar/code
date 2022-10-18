@@ -85,6 +85,9 @@ class VertexTF:
         cat_columns = [i for i in self.df if self.df[i].dtypes == 'object' and i != target_column]
         num_columns = [i for i in self.df if self.df[i].dtypes == 'int64' and i != target_column]
 
+        print(cat_columns)
+        print(num_columns)
+
         for header in num_columns:
             numeric_col = tf.keras.Input(shape=(1,), name=header)
             normalization_layer = get_normalization_layer(header, self.train_ds)
