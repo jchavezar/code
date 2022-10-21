@@ -23,7 +23,8 @@ def get_args():
         )
     parser.add_argument(
         '--learning_rate',
-        type=int,
+        default=0.001,
+        type=float,
         help='number of units in the first hidden layer')
     parser.add_argument(
         '--epochs',
@@ -50,10 +51,12 @@ def main():
     train_ds, val_ds, test_ds = VertexTF.preprocessing(target_column=args.label_column)
     model = VertexTF.create_model(nn_input=args.num_neurons, lr=args.learning_rate)
     print(train_ds)
-    #history = model.fit(train_ds, epochs=args.epochs, validation_data=val_ds)
+    history = model.fit(train_ds, epochs=args.epochs, validation_data=val_ds)
 
-    #hp_metric = history.history['val_accuracy'][-1]
-    #print(hp_metric)
+    hp_metric = history.history['val_accuracy'][-1]
+    print(hp_metric)
+
+    model.save(os.environ['AIP_MODEL_DIR'])
 
 if __name__ == "__main__":
     main()

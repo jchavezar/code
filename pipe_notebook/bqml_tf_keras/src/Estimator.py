@@ -99,11 +99,11 @@ class VertexTF:
             dataset=self.train_ds,
             dtype='string',
             max_tokens=5)
-        encoded_categorical_col = encoding_layer(categorical_col)
-        self.all_inputs.append(categorical_col)
-        self.encoded_features.append(encoded_categorical_col)
+            encoded_categorical_col = encoding_layer(categorical_col)
+            self.all_inputs.append(categorical_col)
+            self.encoded_features.append(encoded_categorical_col)
 
-        return self.train_ds, self.val_ds, self.test_ds 
+        return self.train_ds, self.val_ds, self.test_ds
 
     def create_model(self, nn_input: int, lr: float):
         import tensorflow as tf
